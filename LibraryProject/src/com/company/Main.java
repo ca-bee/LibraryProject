@@ -1,117 +1,95 @@
-package com.company;
-
-import javax.swing.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
-
-public class Main {
-
-    private static Scanner in = new Scanner(System.in);
-    public final static String patronFile = "Patron List.txt";
-    public final static String bookFile = "Book List.txt";
+public class Final_Project {
+    static String[] books; //hold the list of students
+    static final String filename = "src/PatronLists";
+    static final String file = "src/Librarian";
+    static Scanner in = new Scanner(System.in);
+    static ArrayList<String> book;
 
     public static void main(String[] args) {
-        mainMenu();
 
+        try {
+            FileWriter names_file = new FileWriter(filename); // Specify the filename
+            Scanner myReader = new Scanner((Readable) names_file);
 
-        //Create the library of books and write into file
-        System.out.println("How many books to add? ");
-        int numBooks = in.nextInt();//loop this many times
-
-        for(int i = 0 ; i < numBooks ; i++){
-            System.out.println("Please enter the book title: ");
-            String title = in.nextLine();
-
-            System.out.println("Please enter the author's name: ");
-            String author = in.nextLine();
-
-            System.out.println("Please enter the number of copies: ");
-            int copies = in.nextInt();
-
-            Book book = new Book (title, author);
-        }
-
-        //Create patron list
-        System.out.println("How many patrons are in the library? ");
-        int numPatrons = in.nextInt();
-
-        for(int i = 0; i < numPatrons ; i++){
-            System.out.println("Please enter the patron's name: ");
-            String name = in.nextLine();
-
-            System.out.println("Please enter the author's name: ");
-            String phoneNumber = in.nextLine();
-
-            Patron patron = new Patron (name, phoneNumber);
-        }
-
-
-    }
-
-    public static void mainMenu(){
-        System.out.println("Welcome to the library!");
-
-        System.out.println("\n\nMENU:");
-        System.out.println("\nEnter 'A' for Patron Mode");
-        System.out.println("Enter 'B' for Librarian Mode");
-        System.out.println("Enter any other key to exit program.");
-        System.out.println("\nEnter: ");
-
-        String choice = in.nextLine();
-
-        switch (choice) {
-            case "A": //Book Search in Patron Mode
-                Search();
-
-                break;
-            case "B": //Librarian Mode
-                //Check Password-->then Librarian Menu
-                librarianPass();
-
-                break;
-            default:
-                System.exit(0);
-        }
-    }
-
-    /**
-     * Code from Oracle, look at copyright on PasswordField class. Create the GUI and show it.
-     * For thread safety, this method should be invoked from the event dispatch thread.
-     * */
-    private static void librarianPass(){
-        System.out.println("\nWill open a window for entering password...");
-        //creating and showing this application's GUI.
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                //Turn off metal's use of bold fonts
-                UIManager.put("swing.boldMetal", Boolean.FALSE);
-                //Create and set up the window.
-                JFrame frame = new JFrame("Librarian");
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-                //Create and set up the content pane.
-                final PasswordField newContentPane = new PasswordField(frame);
-                newContentPane.setOpaque(true); //content panes must be opaque
-                frame.setContentPane(newContentPane);
-
-                //Make sure the focus goes to the right component
-                //whenever the frame is initially given the focus.
-                frame.addWindowListener(new WindowAdapter() {
-                    public void windowActivated(WindowEvent e) {
-                        newContentPane.resetFocus();
-                    }
-                });
-
-                //Display the window.
-                frame.pack();
-                frame.setVisible(true);
+            int line_num = 1;
+            //read the file
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine(); //read in one line from a while
+                //System.out.print(line_num);
+                //tokenize the line
+                StringTokenizer st = new StringTokenizer(data, "|");
+                System.out.println("Name: " + st.nextToken());
+                System.out.println("Phone Number: " + st.nextToken());
+                System.out.println("Patron Number: " + st.nextToken());
+                System.out.println("Date: " + st.nextToken());
+                line_num++;
             }
-        });
+            myReader.close();
 
+
+        } catch (FileNotFoundException e) {
+            //file is not there, so create it
+
+            System.out.println("How many students?");
+            int num_books = in.nextInt();
+            books = new String[num_books];
+            writeFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Welcome to Toronto Public Library, Please type one of the following options");
+        System.out.println("A.Create Patron");
+        System.out.println("B.Librarian Login");
+        System.out.println("C.Create Books");
+
+        String name = in.nextLine();
+
+        if (name.equals("A") || name.equals("a")) {
+            getuserInput();
+        }
+
+        if (name.equals("B") || name.equals("b")) {
+            getworkerInput();
+        }
     }
 
+    private static void writeFile() {
+        try {
+            FileWriter myWriter = new FileWriter(filename);
+
+            for (int i = 0; i < books.length; i++) {
+                myWriter.write(books[i] + "\r\n");
+            }
+            myWriter.close();
+        }
+        catch(IOException error){
+            System.out.println("error occurred creating a file");
+        }
+    }
+
+    private static void getuserInput() {
+        System.out.println("Please enter your first and last name");
+
+        String name = in.nextLine();
+        System.out.println("Please enter your phone number");
+        int num = in.nextInt();
+    }
+
+    private static void getworkerInput () {
+        System.out.println("Please enter the book title");
+        String title = in.nextLine();
+        System.out.println("Please enter the authors first and last name");
+        String author =in.nextLine();
+
+    }
 
     public static void Librarian(){
         System.out.println("\n\nLIBRARIAN MODE: \n");
@@ -137,7 +115,7 @@ public class Main {
 
                 break;
             case "D":
-                Search();
+                //Search();
                 break;
             case "E":
 
@@ -147,41 +125,12 @@ public class Main {
                 break;
             //case "G":
 
-                //break;
+            //break;
             default:
-                mainMenu();
+                //mainMenu();
                 break;
         }
     }
 
-
-
-    public static void Search(){
-        System.out.println("\n\nSearch for books by: ");
-        System.out.println("\nTitle (Enter A): ");
-        System.out.println("Author: (Enter B): ");
-        System.out.println("Number: (Enter C): ");
-        System.out.println("Enter any other key to go back to main menu: ");
-        System.out.println("\nEnter key: ");
-
-        String choice = in.nextLine();
-
-        switch (choice) {
-            case "A":
-
-                break;
-            case "B":
-
-                break;
-            case "C":
-
-                break;
-            default:
-                mainMenu();
-                break;
-        }
-
-
-    }
 
 }
