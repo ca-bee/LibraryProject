@@ -122,8 +122,15 @@ import java.util.StringTokenizer;
                 System.out.println("Enter 2 for Librarian Mode");
                 System.out.println("Enter any key to exit the program.");
                 System.out.println("Enter key: ");
-                String choice = in.nextLine();
-            }
+                    int choice = in.nextInt();
+                if(choice==1){
+                        PatronMode();
+                }else if(choice==2){
+                        LibrarianMode();
+                }else{
+                        System.exit(0);
+                }
+             }
 
             public static void PatronMode() {
                 System.out.println("PATRON MODE:");
