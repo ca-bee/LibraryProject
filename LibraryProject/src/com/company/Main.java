@@ -17,14 +17,14 @@ public class Final_Project {
     static Scanner in = new Scanner(System.in);
     static ArrayList<Book> books = new ArrayList<>();
     static ArrayList<Patron> patrons = new ArrayList<>();
+    //static ArrayList<checkouts> checkouts = new ArrayList<>();
     //private static Object String;
     private static Book book;
     private static LocalDate dueDate;
     //static String[] books; //hold the list of books
     //static String[] patrons;
     public static void main(String[] args) {
-        System.out.println("How many patrons do you have?");
-        
+             mainMenu();
         //Patrons
         try {
             File names_file = new File(filename); // Specify the filename
@@ -137,9 +137,11 @@ public class Final_Project {
         int choice = in.nextInt();
         if(choice==1){
             PatronMode();
-        }else if(choice==2){
-            LibrarianMode();
-        }else{
+        }
+        if(choice==2){
+            Info();
+        }
+        else{
             System.exit(0);
         }
     }
@@ -166,6 +168,28 @@ public class Final_Project {
 
     }
 
+    public static void Info() {
+        System.out.println("How many patrons do you have?");
+        int patrons = in.nextInt();
+        for (int i=1; i <= patrons; i++) {
+            System.out.println(i + ". Please enter the patron name");
+            String name = in.nextLine();
+
+            //if(filename.equals(name)){
+
+            //}
+            //if(filename.equalsIgnoreCase(name)){
+               // filename.add(name);
+            //}
+
+            //else{
+                //mainMenu();
+            //}
+
+            LibrarianMode();
+        }
+
+    }
     public static void LibrarianMode(){
         System.out.println("LIBRARIAN MODE:");
         System.out.println("Enter 1 to check out books.");
@@ -179,7 +203,13 @@ public class Final_Project {
         int Libchoice =in.nextInt();
 
         if (Libchoice==1){
-            CheckoutBooks();
+            System.out.println("How many books are you checking out");
+            int num = in.nextInt();
+            for(int i =0; i < num; i++) {
+
+            }
+
+            //CheckoutBooks();
         }
 
         if (Libchoice==2){
@@ -215,31 +245,24 @@ public class Final_Project {
         }
     }
 
-    private static void CheckoutBooks () {// check out any books
+    private static void  CheckoutBooks () {// check out any books
         System.out.println("Please type in the book title");
-        String title = in.nextLine();
+        String title1 = in.nextLine();
         System.out.println("Please enter the author name");
-        String author = in.nextLine();
+        String author1 = in.nextLine();
         System.out.println("Please enter the Book Number");
-        String num = in.nextLine();
-    }
-
-        /**
-         * Constructs a checked out book with check out date and due date.
-         * @param book the book that was checked out and includes all its info(title, author, etc.)
-         * @param dueDate date that book is due to be returned to library, which is 3 weeks from the check out date **/
-    public void CheckedOutBook(Book book, LocalDate dueDate){
-            this.book = book;
-            this.dueDate = dueDate;
+        String num1 = in.nextLine();
+        //checkouts c = new checkouts (title1, author1,num1);
+        //return c;
         }
 
     private static void CheckinBooks () { // check in any books
         System.out.println("Please type in the book title");
-        String title = in.nextLine();
+        String title2 = in.nextLine();
         System.out.println("Please enter the author name");
-        String author = in.nextLine();
+        String author2 = in.nextLine();
         System.out.println("Please enter the Book Number");
-        String num = in.nextLine();
+        String num2 = in.nextLine();
     }
 
     private static void Search () { // search book from array list
@@ -304,4 +327,3 @@ public class Final_Project {
         return b;
     }
 }
-
