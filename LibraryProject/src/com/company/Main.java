@@ -16,8 +16,8 @@ public class Main {
     static final String filename = "src/PatronLists.txt";
     static final String file = "src/BookLists.txt";
     static Scanner in = new Scanner(System.in);
-    static ArrayList<Book> books = new ArrayList<Book>();
-    static ArrayList<Patron> patrons = new ArrayList<Patron>();
+    static ArrayList<Book> books = new ArrayList<>();
+    static ArrayList<Patron> patrons = new ArrayList<>();
     //static String[] books; //hold the list of books
     //static String[] patrons;
 
@@ -136,7 +136,8 @@ public class Main {
         System.out.println("Enter key: ");
         int choice = in.nextInt();
         if(choice==1){
-            PatronMode();
+            System.out.println("PATRON MODE: ");
+            if(Search()==null){System.out.println("Sorry, book not found");}
         }else if(choice==2){
             LibrarianMode();
         }else{
@@ -144,27 +145,6 @@ public class Main {
         }
     }
 
-    public static void PatronMode() {
-        System.out.println("PATRON MODE:");
-        System.out.println("Enter 1 to check out books.");
-        System.out.println("Enter 2 to check in books.");
-        System.out.println("Enter any other key to go back.");
-        System.out.println("Enter key: ");
-        int Patchoice=in.nextInt();
-
-        if (Patchoice==1){
-            CheckoutBooks();
-        }
-
-        else if (Patchoice==2){
-            CheckinBooks();
-        }
-
-        else {
-            mainMenu();
-        }
-
-    }
 
     public static void LibrarianMode(){
         System.out.println("LIBRARIAN MODE:");
@@ -179,11 +159,11 @@ public class Main {
         int Libchoice =in.nextInt();
 
         if (Libchoice==1){
-            CheckoutBooks();
+            CheckInOutBooks(false);//checking out books is false
         }
 
         if (Libchoice==2){
-            CheckinBooks();
+            CheckInOutBooks(true);//checking in books is true
         }
 
         if (Libchoice==3){
@@ -215,32 +195,40 @@ public class Main {
         }
     }
 
-    private static void CheckoutBooks () {// check out any books
-        System.out.println("Please type in the book title");
-        String title = in.nextLine();
-        System.out.println("Please enter the author name");
-        String author = in.nextLine();
-        System.out.println("Please enter the Book Number");
-        String num = in.nextLine();
-
+    private static void CheckInOutBooks (boolean inOrOut) {//for check in it's true, checkout is false
+        Book b = Search();
+        if(b==null){
+            System.out.println("Book not found");
+        }else {
+            if (inOrOut) {//if book is taken out
+                b.changeCheckout(false);//book is now checked in
+            } else if(!inOrOut && (b.getCheckOut()==false)){//if book is in library and librarian wants to check it out
+                b.changeCheckout(true);//book is now checked out
+            } else {//if librarian wants to check it out but book is already taken out
+                System.out.println("Book has already been taken out. Can't be checked out.");
+            }
+        }
     }
 
-    private static void CheckinBooks () { // check in any books
-        System.out.println("Please type in the book title");
-        String title = in.nextLine();
-        System.out.println("Please enter the author name");
-        String author = in.nextLine();
-        System.out.println("Please enter the Book Number");
-        String num = in.nextLine();
-    }
 
-    private static void Search () { // search book from array list
+
+    private static Book Search () { // search book from array list
         System.out.println("Please type in the book title");
-        String title = in.nextLine();
+        String title = in.next();
         System.out.println("Please enter the author name");
-        String author = in.nextLine();
+        String author = in.next();
         System.out.println("Please enter the Book Number");
-        String num = in.nextLine();
+        int num = in.nextInt();
+
+        Book b = null;
+        for (int i = 0; i < books.size(); i++) {
+            b = books.get(i);
+            if (b.getTitle().equals(title) && b.getAuthor().equals(author) && (b.getBookNumber() == num)) {
+                System.out.println(b.toString());
+                return b;
+            }
+        }
+        return b;
     }
 
     private static void ChangePatronInfo () {
