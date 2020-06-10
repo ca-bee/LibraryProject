@@ -30,6 +30,7 @@ public class Main {
             Scanner myReader = new Scanner(names_file);
 
             int line_num = 1;
+            System.out.println("PATRONS:");
             //read the file
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine(); //read in one line from a while
@@ -49,6 +50,7 @@ public class Main {
             writeFile1();
         }
 
+        System.out.println("\nBOOKS: ");
         //Books
         try {
             File namesFile = new File(file); // Specify the filename
@@ -73,7 +75,8 @@ public class Main {
 
             writeFile2();
         }
-        mainMenu(); // callas the MainMenu
+        System.out.println("\n");
+        mainMenu(); // calls the MainMenu
     }
 
     private static void writeFile1() {
@@ -280,7 +283,3 @@ public class Main {
 
 
 }
-
-
-
-
