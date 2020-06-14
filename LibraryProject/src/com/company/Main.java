@@ -1,12 +1,12 @@
 package com.company;
 
 import java.io.File;
-        import java.io.FileNotFoundException;
-        import java.io.FileWriter;
-        import java.io.IOException;
-        import java.util.ArrayList;
-        import java.util.Scanner;
-        import java.util.StringTokenizer;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.StringTokenizer;
 
 /**
  * Final_Project.java
@@ -118,7 +118,7 @@ public class Main {
                 Book b = new Book (title, author);
                 int bookNum = b.getBookNumber();
                 myWriter.write(title + "|" + author + "|" + bookNum + "\r\n");
-                books.add(b);
+                books.add(i, b);
             }
             myWriter.close();
         }
@@ -137,7 +137,12 @@ public class Main {
         int choice = in.nextInt();
         if(choice==1){
             System.out.println("PATRON MODE: ");
-            if(Search()==null){System.out.println("Sorry, book not found");}
+            Book m = Search();
+            if(m==null){
+                System.out.println("Book was not found.");
+            }else{
+                System.out.println(m.toString());
+            }
         }else if(choice==2){
             LibrarianMode();
         }else{
@@ -159,11 +164,11 @@ public class Main {
         int Libchoice =in.nextInt();
 
         if (Libchoice==1){
-            CheckInOutBooks(false);//checking out books is false
+            CheckInOutBooks(true);
         }
 
         if (Libchoice==2){
-            CheckInOutBooks(true);//checking in books is true
+            CheckInOutBooks(false);
         }
 
         if (Libchoice==3){
@@ -175,7 +180,12 @@ public class Main {
         }
 
         if (Libchoice==4){
-            Search();
+            Book b = Search();
+            if(b == null){
+                System.out.println("Book was not found.");
+            }else{
+                System.out.println(b.toString());
+            }
         }
 
         if (Libchoice==5){
@@ -196,36 +206,123 @@ public class Main {
     }
 
     private static void CheckInOutBooks (boolean inOrOut) {//for check in it's true, checkout is false
-        Book b = Search();
-        if(b==null){
-            System.out.println("Book not found");
-        }else {
-            if (inOrOut) {//if book is taken out
-                b.changeCheckout(false);//book is now checked in
-            } else if(!inOrOut && (b.getCheckOut()==false)){//if book is in library and librarian wants to check it out
-                b.changeCheckout(true);//book is now checked out
-            } else {//if librarian wants to check it out but book is already taken out
-                System.out.println("Book has already been taken out. Can't be checked out.");
+        System.out.println("CHECK IN/OUT: \n Search for patron that is checking in/out book:");
+        Patron customer = patronSearch();
+
+        if(inOrOut) {
+            System.out.println("Search for book to be checked out:");
+            Book n = Search();
+            if (n == null) {
+                System.out.println("Book can't be found.");
+            } else {
+                if (n.getCheckOut()) {
+                    System.out.println("Book has already been taken out.");
+                } else {
+                    if(customer.checkOutPatron(n)){
+                        System.out.println("Book has successfully been checked out.");
+                    }else{
+                        System.out.println("Book could not be taken out.");
+                    }
+                }
+            }
+        }else{
+            System.out.println("Search for book to be checked in:");
+            Book n = Search();
+            if (n == null) {
+                System.out.println("Book can't be found.");
+            } else {
+                if (n.getCheckOut()) {
+                    System.out.println("Book has already been taken out.");
+                } else {
+                    if(customer.checkInPatron(n)){
+                        System.out.println("Book has successfully been checked out.");
+                    }else{
+                        System.out.println("Book could not be checked in successfully.");
+                    }
+                }
             }
         }
     }
 
 
 
-    private static Book Search () { // search book from array list
-        System.out.println("Please type in the book title");
-        String title = in.next();
-        System.out.println("Please enter the author name");
-        String author = in.next();
-        System.out.println("Please enter the Book Number");
-        int num = in.nextInt();
+    private static Patron patronSearch () {
+        Patron p = null;
+        System.out.println("SEARCH PATRONS\n Enter 1 to search by name\nEnter 2 to search by phone number ");
+        System.out.println("Enter 3 to search by patron number\n Enter key: ");
+        int choisi = in.nextInt();
 
+        if(choisi == 1){//By name
+            System.out.println("Type the name of the patron: ");
+            String name1 = in.nextLine();
+
+            for (int i = 0; i < patrons.size(); i++) {
+                if (((patrons.get(i)).getName()).equals(name1)) {//if names match
+                    p = patrons.get(i);
+                }
+            }
+
+        } else if(choisi ==2){//By author
+            System.out.println("Enter the phone number of the patron: ");
+            String phoneNum1 = in.nextLine();
+
+            for (int i = 0; i < patrons.size(); i++) {
+                if (((patrons.get(i)).getPhoneNumber()).equals(phoneNum1)) {//if phone #s match
+                    p = patrons.get(i);
+                }
+            }
+
+        }else if(choisi ==3){//By patron number
+            System.out.println("Enter the patron number: ");
+            int patBer = in.nextInt();
+
+            for (int i = 0; i < books.size(); i++) {
+                if (((patrons.get(i)).getPatronNumber())==(patBer)) { //if patron #s match
+                    p = patrons.get(i);
+                }
+            }
+        }
+
+        return p;
+    }
+
+    private static Book Search () { // search book from array list
         Book b = null;
-        for (int i = 0; i < books.size(); i++) {
-            b = books.get(i);
-            if (b.getTitle().equals(title) && b.getAuthor().equals(author) && (b.getBookNumber() == num)) {
-                System.out.println(b.toString());
-                return b;
+        System.out.println("Press one of the numbers to search a certain way: ");
+        System.out.println("1-By title\n2-By author\3By number: ");
+        int choose = in.nextInt();
+
+        if(choose==1) {//Search by title
+            System.out.println("Please type in the book title:");
+            String title1 = in.next();
+
+
+            for (int i = 0; i < books.size(); i++) {
+                if (((books.get(i)).getTitle()).equals(title1)) {// || b.getAuthor().equals(author) || (b.getBookNumber() == num)
+                    b = books.get(i);
+                }
+            }
+
+
+        } else if(choose==2){//Search by author
+            System.out.println("Please enter the author name");
+            String author1 = in.nextLine();
+
+            for (int i = 0; i < books.size(); i++) {
+                if (((books.get(i)).getAuthor()).equals(author1)) {// || b.getAuthor().equals(author) || (b.getBookNumber() == num)
+                    b = books.get(i);
+                }
+            }
+
+
+        } else if (choose==3){//Search by Number
+            System.out.println("Please enter the Book Number");
+            int num = in.nextInt();
+
+            for (int i = 0; i < books.size(); i++) {
+                if (((books.get(i)).getBookNumber())== num) {// || b.getAuthor().equals(author) || (b.getBookNumber() == num)
+                    b = books.get(i);
+                }
             }
         }
         return b;
@@ -271,3 +368,4 @@ public class Main {
 
 
 }
+
