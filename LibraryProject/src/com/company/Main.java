@@ -212,9 +212,7 @@ public class Main {
         if(inOrOut) {
             System.out.println("Search for book to be checked out:");
             Book n = Search();
-            if (n == null) {
-                System.out.println("Book can't be found.");
-            } else {
+            try{
                 if (n.getCheckOut()) {
                     System.out.println("Book has already been taken out.");
                 } else {
@@ -224,13 +222,13 @@ public class Main {
                         System.out.println("Book could not be taken out.");
                     }
                 }
+            }catch(NullPointerException e){
+                System.out.println("Book does not exist.");
             }
         }else{
             System.out.println("Search for book to be checked in:");
             Book n = Search();
-            if (n == null) {
-                System.out.println("Book can't be found.");
-            } else {
+            try{
                 if (n.getCheckOut()) {
                     System.out.println("Book has already been taken out.");
                 } else {
@@ -240,6 +238,8 @@ public class Main {
                         System.out.println("Book could not be checked in successfully.");
                     }
                 }
+            }catch(NullPointerException e){
+                System.out.println("Book does not exist.");
             }
         }
     }
@@ -368,4 +368,5 @@ public class Main {
 
 
 }
+
 
