@@ -1,6 +1,7 @@
 package com.company;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 
 /**
@@ -66,6 +67,19 @@ public class Patron {
      * **/
     public int getPatronNumber(){return patronNumber;}
 
+    /**
+     * Gets the due dates for a patron and displays it as string.
+     * @return the index of due dates for all books.
+     * **/
+    public String getDueDates(){
+        String index="";
+        int i = 0;
+        while(i < dueDates.length){
+            index+= checkedOut[i]+ " ,due: "+dueDates[i].format(DateTimeFormatter.ofPattern("dd-MMM-yy")) + "/ ";
+            i++;
+        }
+        return index;
+    }
 
     /**
      * Adds a certain book and its due date to the list of books that the patron has checked out. It also checks to see
@@ -75,7 +89,7 @@ public class Patron {
      * @return true if the book was successfully checked out and false if the book is not successfully checked out.
      * **/
     public boolean checkOutPatron(Book b){
-        if((indexOfCheckout < maxCheckOut) && (b.getCheckOut()==false)){//patron hasn't taken out max number of books
+        if((indexOfCheckout < maxCheckOut) && (!b.getCheckOut())){//patron hasn't taken out max number of books
             checkedOut[indexOfCheckout] = b; //adds certain book to list of checkout
             LocalDate today = LocalDate.now();
             LocalDate due = today.plusWeeks(3);
@@ -91,7 +105,6 @@ public class Patron {
      *Removes the book from the list of books that the patron has checked out. Makes sure that the status is checked in.
      * @param b the book that is being checked in.
      * @return true if the book has been successfully checked in and false if the book was not successfully checked in.
-
      * **/
     public boolean checkInPatron(Book b){
         for(int i = 0; i < checkedOut.length; i++){
@@ -106,7 +119,6 @@ public class Patron {
         }
         return false;
     }
-
     
 
 }
