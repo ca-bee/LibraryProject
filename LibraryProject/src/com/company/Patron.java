@@ -91,6 +91,7 @@ public class Patron {
      *Removes the book from the list of books that the patron has checked out. Makes sure that the status is checked in.
      * @param b the book that is being checked in.
      * @return true if the book has been successfully checked in and false if the book was not successfully checked in.
+
      * **/
     public boolean checkInPatron(Book b){
         for(int i = 0; i < checkedOut.length; i++){
@@ -109,3 +110,6 @@ public class Patron {
     
 
 }
+
+
+
