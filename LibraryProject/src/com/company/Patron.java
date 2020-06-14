@@ -39,10 +39,26 @@ public class Patron {
     public String getName(){return name;}
 
     /**
+     * Changes the patron's name to a new name.
+     * @param newName the patron's new name.
+     * **/
+    public void changeName(String newName){
+        name = newName;
+    }
+
+    /**
      * Gets phone number.
      * @return phone number of patron
      * **/
     public String getPhoneNumber(){return phoneNumber;}
+
+    /**
+     * Changes the patron's phone number into a new phone number.
+     * @param newPhoneNumber the patron's phone number.
+     * **/
+    public void changePhoneNumber(String newPhoneNumber){
+        phoneNumber = newPhoneNumber;
+    }
 
     /**
      * Gets patron number
@@ -112,4 +128,6 @@ public class Patron {
     }*/
 
 }
+
+
 
