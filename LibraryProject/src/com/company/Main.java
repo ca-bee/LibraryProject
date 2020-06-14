@@ -2,7 +2,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -17,16 +16,15 @@ public class Final_Project {
     static Scanner in = new Scanner(System.in);
     static ArrayList<Book> books = new ArrayList<>();
     static ArrayList<Patron> patrons = new ArrayList<>();
-    //static ArrayList<checkouts> checkouts = new ArrayList<>();
-    //private static Object String;
-    private static Book book;
-    private static LocalDate dueDate;
     //static String[] books; //hold the list of books
     //static String[] patrons;
+
     public static void main(String[] args) {
-             mainMenu();
+
+
         //Patrons
         try {
+            writeFile1();
             File names_file = new File(filename); // Specify the filename
             Scanner myReader = new Scanner(names_file);
 
@@ -43,16 +41,19 @@ public class Final_Project {
                 System.out.println("Patron Number: " + st.nextToken());
                 line_num++;
             }
+
             myReader.close();
 
         } catch (FileNotFoundException e) {
             //file is not there, so create it
+
             writeFile1();
         }
+
         System.out.println("\nBOOKS: ");
         //Books
-
         try {
+            writeFile2();
             File namesFile = new File(file); // Specify the filename
             Scanner myReader = new Scanner(namesFile);
 
@@ -72,11 +73,10 @@ public class Final_Project {
 
         } catch (FileNotFoundException e) {
             //file is not there, so create it
-
-            writeFile2();
+            //writeFile2();
         }
         System.out.println("\n");
-        mainMenu(); // calls the MainMenu
+        mainMenu();// calls the MainMenu
     }
 
     private static void writeFile1() {
@@ -97,6 +97,7 @@ public class Final_Project {
                 patrons.add(i, p);
             }
             myWriter.close();
+
         }
         catch(IOException error){
             System.out.println("error occurred creating a file");
@@ -118,7 +119,7 @@ public class Final_Project {
                 Book b = new Book (title, author);
                 int bookNum = b.getBookNumber();
                 myWriter.write(title + "|" + author + "|" + bookNum + "\r\n");
-                books.add(b);
+                books.add(i, b);
             }
             myWriter.close();
         }
@@ -136,60 +137,20 @@ public class Final_Project {
         System.out.println("Enter key: ");
         int choice = in.nextInt();
         if(choice==1){
-            PatronMode();
-        }
-        if(choice==2){
-            Info();
-        }
-        else{
+            System.out.println("PATRON MODE: ");
+            Book m = Search();
+            if(m==null){
+                System.out.println("Book was not found.");
+            }else{
+                System.out.println(m.toString());
+            }
+        }else if(choice==2){
+            LibrarianMode();
+        }else{
             System.exit(0);
         }
     }
 
-    public static void PatronMode() {
-        System.out.println("PATRON MODE:");
-        System.out.println("Enter 1 to check out books.");
-        System.out.println("Enter 2 to check in books.");
-        System.out.println("Enter any other key to go back.");
-        System.out.println("Enter key: ");
-        int Patchoice=in.nextInt();
-
-        if (Patchoice==1){
-            CheckoutBooks();
-        }
-
-        else if (Patchoice==2){
-            CheckinBooks();
-        }
-
-        else {
-            mainMenu();
-        }
-
-    }
-
-    public static void Info() {
-        System.out.println("How many patrons do you have?");
-        int patrons = in.nextInt();
-        for (int i=1; i <= patrons; i++) {
-            System.out.println(i + ". Please enter the patron name");
-            String name = in.nextLine();
-
-            //if(filename.equals(name)){
-
-            //}
-            //if(filename.equalsIgnoreCase(name)){
-               // filename.add(name);
-            //}
-
-            //else{
-                //mainMenu();
-            //}
-
-            LibrarianMode();
-        }
-
-    }
     public static void LibrarianMode(){
         System.out.println("LIBRARIAN MODE:");
         System.out.println("Enter 1 to check out books.");
@@ -203,17 +164,11 @@ public class Final_Project {
         int Libchoice =in.nextInt();
 
         if (Libchoice==1){
-            System.out.println("How many books are you checking out");
-            int num = in.nextInt();
-            for(int i =0; i < num; i++) {
-
-            }
-
-            //CheckoutBooks();
+            CheckInOutBooks(true);
         }
 
         if (Libchoice==2){
-            CheckinBooks();
+            CheckInOutBooks(false);
         }
 
         if (Libchoice==3){
@@ -225,7 +180,12 @@ public class Final_Project {
         }
 
         if (Libchoice==4){
-            Search();
+            Book b = Search();
+            if(b == null){
+                System.out.println("Book was not found.");
+            }else{
+                System.out.println(b.toString());
+            }
         }
 
         if (Libchoice==5){
@@ -239,74 +199,150 @@ public class Final_Project {
         if (Libchoice==6){
             ChangePatronInfo();
         }
-
         else {
             mainMenu();
         }
     }
+    private static void CheckInOutBooks (boolean inOrOut) {//for check in it's true, checkout is false
+        System.out.println("CHECK IN/OUT: \n Search for patron that is checking in/out book:");
+        Patron customer = patronSearch();
 
-    private static void  CheckoutBooks () {// check out any books
-        System.out.println("Please type in the book title");
-        String title1 = in.nextLine();
-        System.out.println("Please enter the author name");
-        String author1 = in.nextLine();
-        System.out.println("Please enter the Book Number");
-        String num1 = in.nextLine();
-        //checkouts c = new checkouts (title1, author1,num1);
-        //return c;
+        if(inOrOut) {
+            System.out.println("Search for book to be checked out:");
+            Book n = Search();
+            try{
+                if (n.getCheckOut()) {
+                    System.out.println("Book has already been taken out.");
+                } else {
+                    if(customer.checkOutPatron(n)){
+                        System.out.println("Book has successfully been checked out.");
+                    }else{
+                        System.out.println("Book could not be taken out.");
+                    }
+                }
+            }catch(NullPointerException e){
+                System.out.println("Book does not exist.");
+            }
+        }else{
+            System.out.println("Search for book to be checked in:");
+            Book n = Search();
+            try{
+                if (n.getCheckOut()) {
+                    System.out.println("Book has already been taken out.");
+                } else {
+                    if(customer.checkInPatron(n)){
+                        System.out.println("Book has successfully been checked out.");
+                    }else{
+                        System.out.println("Book could not be checked in successfully.");
+                    }
+                }
+            }catch(NullPointerException e){
+                System.out.println("Book does not exist.");
+            }
+        }
+    }
+
+
+
+    private static Patron patronSearch () {
+        Patron p = null;
+        System.out.println("SEARCH PATRONS\n Enter 1 to search by name\nEnter 2 to search by phone number ");
+        System.out.println("Enter 3 to search by patron number\n Enter key: ");
+        int choisi = in.nextInt();
+
+        if(choisi == 1){//By name
+            System.out.println("Type the name of the patron: ");
+            String name1 = in.nextLine();
+
+            for (int i = 0; i < patrons.size(); i++) {
+                if (((patrons.get(i)).getName()).equals(name1)) {//if names match
+                    p = patrons.get(i);
+                }
+            }
+
+        } else if(choisi ==2){//By author
+            System.out.println("Enter the phone number of the patron: ");
+            String phoneNum1 = in.nextLine();
+
+            for (int i = 0; i < patrons.size(); i++) {
+                if (((patrons.get(i)).getPhoneNumber()).equals(phoneNum1)) {//if phone #s match
+                    p = patrons.get(i);
+                }
+            }
+
+        }else if(choisi ==3){//By patron number
+            System.out.println("Enter the patron number: ");
+            int patBer = in.nextInt();
+
+            for (int i = 0; i < books.size(); i++) {
+                if (((patrons.get(i)).getPatronNumber())==(patBer)) { //if patron #s match
+                    p = patrons.get(i);
+                }
+            }
         }
 
-    private static void CheckinBooks () { // check in any books
-        System.out.println("Please type in the book title");
-        String title2 = in.nextLine();
-        System.out.println("Please enter the author name");
-        String author2 = in.nextLine();
-        System.out.println("Please enter the Book Number");
-        String num2 = in.nextLine();
+        return p;
     }
 
-    private static void Search () { // search book from array list
-        System.out.println("Please type in the book title");
-        String title = in.nextLine();
-        System.out.println("Please enter the author name");
-        String author = in.nextLine();
-        System.out.println("Please enter the Book Number");
-        String num = in.nextLine();
-    }
+    private static Book Search () { // search book from array list
+        Book b = null;
+        System.out.println("Press one of the numbers to search a certain way: ");
+        System.out.println("1-By title\n2-By author\3By number: ");
+        int choose = in.nextInt();
 
-    public static void ChangeName () {
-        System.out.println("Please enter given name that is input to the system");
-        String given_name = in.nextLine();
-        System.out.println("Enter the name you want to be changed in the system");
-        String new_name = in.nextLine ();
-    }
+        if(choose==1) {//Search by title
+            System.out.println("Please type in the book title:");
+            String title1 = in.next();
 
-    public static void ChangePhoneNumber(){
-       System.out.println("Enter your given phone number");
-       int phone_num = in.nextInt();
-       System.out.println("Enter the new phone number");
-       int new_num = in.nextInt();
+
+            for (int i = 0; i < books.size(); i++) {
+                if (((books.get(i)).getTitle()).equals(title1)) {// || b.getAuthor().equals(author) || (b.getBookNumber() == num)
+                    b = books.get(i);
+                }
+            }
+
+
+        } else if(choose==2){//Search by author
+            System.out.println("Please enter the author name");
+            String author1 = in.nextLine();
+
+            for (int i = 0; i < books.size(); i++) {
+                if (((books.get(i)).getAuthor()).equals(author1)) {// || b.getAuthor().equals(author) || (b.getBookNumber() == num)
+                    b = books.get(i);
+                }
+            }
+
+
+        } else if (choose==3){//Search by Number
+            System.out.println("Please enter the Book Number");
+            int num = in.nextInt();
+
+            for (int i = 0; i < books.size(); i++) {
+                if (((books.get(i)).getBookNumber())== num) {// || b.getAuthor().equals(author) || (b.getBookNumber() == num)
+                    b = books.get(i);
+                }
+            }
+        }
+        return b;
     }
 
     private static void ChangePatronInfo () {
-        System.out.println("Which one do you want to change?");
-        System.out.println("OPTIONS");
-        System.out.println("Enter 1 to Change your Name");
-        System.out.println("Enter 2 to Change your Phone Number");
-        //System.out.println("Enter C to Change address");
-        int opt = in.nextInt();
+        System.out.println("Search for patron whose info must be changed: ");
+        Patron p = patronSearch();
 
-        if (opt==1) {
-            ChangeName();
+        System.out.println("Enter 1 to change patron's name, 2 to change phone number.");
+        int num = in.nextInt();
+
+        if (num == 1){
+            System.out.println("Enter new name: ");
+            String newName = in.nextLine();
+            p.changeName(newName);
+        }else{
+            System.out.println("Enter new phone number: ");
+            String newPhoneNum = in.nextLine();
+            p.changePhoneNumber(newPhoneNum);
         }
 
-        if (opt==2) {
-            ChangePhoneNumber();
-        }
-
-        else {
-            System.out.println(0);
-        }
     }
 
     private static Patron AddNewPatron() {
@@ -325,5 +361,6 @@ public class Final_Project {
         String author =in.nextLine();
         Book b = new Book(book, author);
         return b;
+
     }
 }
