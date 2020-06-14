@@ -329,21 +329,21 @@ public class Main {
     }
 
     private static void ChangePatronInfo () {
-        System.out.println("Which one do you want to change?");
-        System.out.println("OPTIONS");
-        System.out.println("Enter 1 to Change your Name");
-        System.out.println("Enter 2 to Change your Phone Number");
-        //System.out.println("Enter C to Change address");
-        int opt = in.nextInt();
+        System.out.println("Search for patron whose info must be changed: ");
+        Patron p = patronSearch();
 
-        if (opt==1) {
+        System.out.println("Enter 1 to change patron's name, 2 to change phone number.");
+        int num = in.nextInt();
 
+        if (num == 1){
+            System.out.println("Enter new name: ");
+            String newName = in.nextLine();
+            p.changeName(newName);
+        }else{
+            System.out.println("Enter new phone number: ");
+            String newPhoneNum = in.nextLine();
+            p.changePhoneNumber(newPhoneNum);
         }
-
-        if (opt==2) {
-
-        }
-
 
     }
 
@@ -368,5 +368,4 @@ public class Main {
 
 
 }
-
 
