@@ -91,6 +91,7 @@ public class Patron {
      *Removes the book from the list of books that the patron has checked out. Makes sure that the status is checked in.
      * @param b the book that is being checked in.
      * @return true if the book has been successfully checked in and false if the book was not successfully checked in.
+
      * **/
     public boolean checkInPatron(Book b){
         for(int i = 0; i < checkedOut.length; i++){
@@ -106,26 +107,7 @@ public class Patron {
         return false;
     }
 
-    /*/**
-     * Calculates the current amount of fees that needs to be paid by the patron. It takes the current
-     * day and checks to see if it comes after the due date of the books borrowed. If it is after, it
-     * adds the fee which is 10 cents per day for each late book and calculates the total fee.
-     * @param today the current day used to check how much fees are currently owed.
-     * @return the total amount of fees owed by the patron in dollars, which will be zero if no fees are owed.
-     * **/
-    /*public double calculateFees(LocalDate today){
-
-        LocalDate[] dueDateList = new LocalDate[checkedOut.size()];
-        double fee = 0.00;
-        for(int i = 0; i < dueDateList.length; i++){//goes through list of due dates and find book that is being checked in
-            dueDateList[i] = (checkedOut.get(i)).getDueDate();
-            if(today.isAfter(dueDateList[i])){//check if checkInDate is after dueDate
-                double noOfDaysBetween = ChronoUnit.DAYS.between(dueDateList[i], today);
-                fee+= (noOfDaysBetween)*(0.10);//multiply by 0.10 and add to sum of total fees
-            }
-        }
-        return fee;//total sum of fees
-    }*/
+    
 
 }
 
