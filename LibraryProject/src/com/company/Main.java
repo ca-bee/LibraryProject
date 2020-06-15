@@ -243,6 +243,10 @@ public class Final_Project {
     }
 
 
+    /**
+     * Searches for a patron by either name, phone number or patron number by going through each patron in the list.
+     * @return the patron that is looked up.
+     * **/
 
     private static Patron patronSearch () {
         Patron p = null;
@@ -284,6 +288,10 @@ public class Final_Project {
         return p;
     }
 
+    /**
+     * Searches for a book by either name, phone number or patron number by going through each book in the list.
+     * @return the book that is searched up.
+     * **/
     private static Book Search () { // search book from array list
         Book b = null;
         System.out.println("Press one of the numbers to search a certain way: ");
@@ -345,6 +353,10 @@ public class Final_Project {
 
     }
 
+    /**
+     * Allows the user to enter a name and phone number of a patron.
+     * @return a patron that is added to the patron list.
+     * **/
     private static Patron AddNewPatron() {
         System.out.println("Please enter your first and last name");
         String name = in.nextLine();
@@ -354,6 +366,10 @@ public class Final_Project {
         return p;
     }
 
+    /**
+     * Allows the user to enter a title and the author of a book.
+     * @return the book that is added to the list of books in the library.
+     * **/
     private static Book AddNewBooks() {
         System.out.println("Please enter the book title");
         String book = in.nextLine();
